@@ -4,25 +4,6 @@ import Notification from 'components/Notification';
 import { List, DeleteBtn } from './ContactList.styled';
 import sanitizeString from 'utils/sanitizeString';
 
-function FilteredList({ listItems, message, deleteContact }) {
-  return (
-    <>
-      {listItems.length > 0 ? (
-        <List>
-          {listItems.map(({ id, name, number }) => (
-            <li key={id}>
-              {name}: {number}
-              <DeleteBtn onClick={() => deleteContact(id)}>Delete</DeleteBtn>
-            </li>
-          ))}
-        </List>
-      ) : (
-        <Notification message={message} />
-      )}
-    </>
-  );
-}
-
 export default class ContactList extends Component {
   static propTypes = {
     contactList: PropTypes.arrayOf(
@@ -32,6 +13,8 @@ export default class ContactList extends Component {
         number: PropTypes.string.isRequired,
       })
     ),
+    filter: PropTypes.string,
+    deleteContact: PropTypes.func.isRequired,
   };
 
   render() {
@@ -43,13 +26,20 @@ export default class ContactList extends Component {
     return (
       <>
         {contactList.length > 0 ? (
-          <FilteredList
-            filter={filter}
-            filterHandler={this.filterHandler}
-            listItems={filteredContactList}
-            deleteContact={deleteContact}
-            message="No contacts found"
-          />
+          filteredContactList.length > 0 ? (
+            <List>
+              {filteredContactList.map(({ id, name, number }) => (
+                <li key={id}>
+                  {name}: {number}
+                  <DeleteBtn onClick={() => deleteContact(id)}>
+                    Delete
+                  </DeleteBtn>
+                </li>
+              ))}
+            </List>
+          ) : (
+            <Notification message="No contacts found" />
+          )
         ) : (
           <Notification message="Contact list is empty" />
         )}

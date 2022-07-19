@@ -1,31 +1,49 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
+import GlobalStyle from 'styles/GlobalStyle';
 import ContactList from 'components/ContactList';
-import GlobalStyle from 'components/GlobalStyle';
 import NewContactForm from 'components/NewContactForm';
 import SearchContact from 'components/SearchContact';
-import Box from './components/Box';
-import sanitizeString from './utils/sanitizeString';
+import Box from 'components/Box';
+import sanitizeString from 'utils/sanitizeString';
 import Section from 'components/Section';
+
+const LS_CONTACT_LIST = 'contactList';
+
+const Container = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  color: #010101;
+  margin: 0 auto;
+  width: 400px;
+`;
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
   };
 
-  checkExistingContactName = newContact => {
-    return (
-      this.state.contacts.filter(
-        contact =>
-          sanitizeString(contact.name) === sanitizeString(newContact.name)
-      ).length > 0
-    );
-  };
+  componentDidMount() {
+    const contactList = localStorage.getItem(LS_CONTACT_LIST);
+    if (contactList) {
+      this.setState({
+        contacts: JSON.parse(contactList),
+      });
+    }
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem(LS_CONTACT_LIST, JSON.stringify(this.state.contacts));
+  }
+
+  checkExistingContactName = newContact =>
+    this.state.contacts.filter(
+      contact =>
+        sanitizeString(contact.name) === sanitizeString(newContact.name)
+    ).length > 0;
 
   filterHandler = ({ currentTarget: { value } }) => {
     this.setState({
@@ -33,7 +51,7 @@ export class App extends Component {
     });
   };
 
-  addContactHandler = async newContact => {
+  addContactHandler = newContact => {
     if (this.checkExistingContactName(newContact)) {
       throw new Error(`${newContact.name} is already in contacts`);
     }
@@ -53,19 +71,7 @@ export class App extends Component {
     return (
       <>
         <GlobalStyle />
-        <div
-          style={{
-            height: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            // justifyContent: 'center',
-            alignItems: 'start',
-            // fontSize: 40,
-            color: '#010101',
-            margin: '0 auto',
-            width: '400px',
-          }}
-        >
+        <Container>
           <Box as="h1" mx="auto">
             Phonebook
           </Box>
@@ -82,7 +88,7 @@ export class App extends Component {
               deleteContact={this.deleteContactHandler}
             />
           </Section>
-        </div>
+        </Container>
       </>
     );
   }

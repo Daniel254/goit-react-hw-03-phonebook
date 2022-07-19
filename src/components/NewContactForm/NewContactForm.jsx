@@ -6,11 +6,6 @@ import * as yup from 'yup';
 import { Input, LabelName, Button, Error } from './NewContactForm.styled';
 import Section from 'components/Section';
 
-const initialValues = {
-  name: '',
-  number: '',
-};
-
 const schema = yup.object().shape({
   name: yup
     .string()
@@ -37,14 +32,16 @@ export default class NewContactForm extends Component {
   };
 
   submitHandler = (values, actions) => {
-    this.props
-      .addContact({
+    try {
+      this.props.addContact({
         id: nanoid(),
         name: values.name,
         number: values.number,
-      })
-      .then(actions.resetForm)
-      .catch(error => alert(error));
+      });
+      actions.resetForm();
+    } catch (error) {
+      alert(error);
+    }
   };
   render() {
     const nameInputId = nanoid();
@@ -52,7 +49,10 @@ export default class NewContactForm extends Component {
     return (
       <Section>
         <Formik
-          initialValues={initialValues}
+          initialValues={{
+            name: '',
+            number: '',
+          }}
           onSubmit={this.submitHandler}
           validationSchema={schema}
         >
