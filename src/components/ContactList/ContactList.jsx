@@ -25,23 +25,19 @@ export default class ContactList extends Component {
 
     return (
       <>
-        {contactList.length > 0 ? (
-          filteredContactList.length > 0 ? (
-            <List>
-              {filteredContactList.map(({ id, name, number }) => (
-                <li key={id}>
-                  {name}: {number}
-                  <DeleteBtn onClick={() => deleteContact(id)}>
-                    Delete
-                  </DeleteBtn>
-                </li>
-              ))}
-            </List>
-          ) : (
-            <Notification message="No contacts found" />
-          )
-        ) : (
+        {filteredContactList.length > 0 ? (
+          <List>
+            {filteredContactList.map(({ id, name, number }) => (
+              <li key={id}>
+                {name}: {number}
+                <DeleteBtn onClick={() => deleteContact(id)}>Delete</DeleteBtn>
+              </li>
+            ))}
+          </List>
+        ) : contactList.length === 0 ? (
           <Notification message="Contact list is empty" />
+        ) : (
+          <Notification message="No contacts found" />
         )}
       </>
     );
