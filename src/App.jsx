@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import GlobalStyle from 'styles/GlobalStyle';
 import ContactList from 'components/ContactList';
 import NewContactForm from 'components/NewContactForm';
@@ -7,18 +6,8 @@ import SearchContact from 'components/SearchContact';
 import Box from 'components/Box';
 import sanitizeString from 'utils/sanitizeString';
 import Section from 'components/Section';
-
-const LS_CONTACT_LIST = 'contactList';
-
-const Container = styled.div`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  color: #010101;
-  margin: 0 auto;
-  width: 400px;
-`;
+import Container from 'components/Container';
+import { LS_CONTACT_LIST } from 'constatns/lsConstants';
 
 export class App extends Component {
   state = {
